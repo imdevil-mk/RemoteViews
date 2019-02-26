@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.RemoteViews;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -60,6 +61,37 @@ public class MainActivity extends AppCompatActivity {
                         .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher_round))
                         .setContentIntent(pi)
                         .setDeleteIntent(delPI);
+                /**发送一个通知**/
+                nm.notify(1,builder.build());
+            }
+        });
+
+
+        findViewById(R.id.remoteView).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /**创建点播时发送的广播**/
+                Intent intent = new Intent(context,RecevierActivity.class);
+                intent.setAction("Action_SIMPLE_OPEN");
+                PendingIntent pi = PendingIntent.getActivity(context,0,intent,0);
+                /**创建删除时发送的广播**/
+                Intent delIntent = new Intent(context, RecevierActivity.class);
+                delIntent.setAction("Action_SIMPLE_DELETE");
+                PendingIntent delPI = PendingIntent.getActivity(context, 1, delIntent, 0);
+                /**创建一个RemoteView**/
+                RemoteViews remoteViews = new RemoteViews(context.getPackageName(),R.layout.remote_view);
+                /**创建一个Notification**/
+                Notification.Builder builder = new Notification.Builder(context, "myChannel")
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("Content Title")
+                        .setContentText("Content Text")
+                        .setAutoCancel(true)
+                        .setShowWhen(true)
+                        .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher_round))
+                        .setContentIntent(pi)
+                        .setDeleteIntent(delPI)
+                        .setCustomContentView(remoteViews)
+                        .setCustomBigContentView(remoteViews);
                 /**发送一个通知**/
                 nm.notify(1,builder.build());
             }
